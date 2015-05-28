@@ -29,6 +29,7 @@ var RaisedButton = React.createClass({
     primary: React.PropTypes.bool,
     secondary: React.PropTypes.bool,
     labelStyle: React.PropTypes.object,
+    pill: React.PropTypes.bool,
   },
 
   getInitialState: function() {
@@ -53,7 +54,7 @@ var RaisedButton = React.createClass({
     return  this.props.disabled ? this.getTheme().disabledColor :
             this.props.primary ? this.getTheme().primaryColor :
             this.props.secondary ? this.getTheme().secondaryColor :
-            this.getTheme().color; 
+            this.getTheme().color;
   },
 
   _getLabelColor: function() {
@@ -86,7 +87,7 @@ var RaisedButton = React.createClass({
         width: '100%',
         padding: 0,
         overflow: 'hidden',
-        borderRadius: 2,
+        borderRadius: this.props.pill? 50 : 2,
         transition: Transitions.easeOut(),
         backgroundColor: this._getBackgroundColor(),
 
@@ -143,7 +144,7 @@ var RaisedButton = React.createClass({
     if (!this.hasOwnProperty('styles')) this.styles = this.getStyles();
 
     return (
-      <Paper 
+      <Paper
         style={this.mergeAndPrefix(this.styles.root, this.props.style)}
         zDepth={this.state.zDepth}>
           <EnhancedButton {...other}

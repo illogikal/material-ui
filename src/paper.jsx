@@ -10,6 +10,7 @@ var Paper = React.createClass({
   },
 
   propTypes: {
+    pill: React.PropTypes.bool,
     circle: React.PropTypes.bool,
     rounded: React.PropTypes.bool,
     zDepth: React.PropTypes.oneOf([0,1,2,3,4,5]),
@@ -31,9 +32,10 @@ var Paper = React.createClass({
         transition: this.props.transitionEnabled && Transitions.easeOut(),
         boxSizing: 'border-box',
         fontFamily: this.context.muiTheme.contentFontFamily,
-        WebkitTapHighlightColor: 'rgba(0,0,0,0)', 
+        WebkitTapHighlightColor: 'rgba(0,0,0,0)',
         boxShadow: this._getZDepthShadows(this.props.zDepth),
         borderRadius: this.props.circle ? '50%' :
+          this.props.pill ? '50' :
           this.props.rounded ? '2px' : '0px'
       }
     };

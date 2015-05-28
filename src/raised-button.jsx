@@ -144,7 +144,7 @@ var RaisedButton = React.createClass({
     if (!this.hasOwnProperty('styles')) this.styles = this.getStyles();
 
     return (
-      <Paper
+      <Paper pill={this.props.pill}
         style={this.mergeAndPrefix(this.styles.root, this.props.style)}
         zDepth={this.state.zDepth}>
           <EnhancedButton {...other}

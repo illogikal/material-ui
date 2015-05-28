@@ -35,7 +35,7 @@ var Paper = React.createClass({
         WebkitTapHighlightColor: 'rgba(0,0,0,0)',
         boxShadow: this._getZDepthShadows(this.props.zDepth),
         borderRadius: this.props.circle ? '50%' :
-          this.props.pill ? '50' :
+          this.props.pill ? '150px' :
           this.props.rounded ? '2px' : '0px'
       }
     };

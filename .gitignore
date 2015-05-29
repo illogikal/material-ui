@@ -6,4 +6,3 @@ build
 .module-cache
 
 # Exclude compiled files
-lib

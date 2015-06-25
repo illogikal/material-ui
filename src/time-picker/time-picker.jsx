@@ -1,55 +1,54 @@
-var React = require('react');
-var StylePropable = require('../mixins/style-propable');
+let React = require('react');
+let StylePropable = require('../mixins/style-propable');
+let WindowListenable = require('../mixins/window-listenable');
+let TimePickerDialog = require('./time-picker-dialog');
+let TextField = require('../text-field');
 
-var WindowListenable = require('../mixins/window-listenable');
-var DateTime = require('../utils/date-time');
-var KeyCode = require('../utils/key-code');
-var TimePickerDialog = require('./time-picker-dialog');
-var TextField = require('../text-field');
 
-var emptyTime = new Date();
+let emptyTime = new Date();
 emptyTime.setHours(0);
 emptyTime.setMinutes(0);
 
-var TimePicker = React.createClass({
+
+let TimePicker = React.createClass({
 
   mixins: [StylePropable, WindowListenable],
 
   propTypes: {
-    defaultTime: React.PropTypes.object, 
+    defaultTime: React.PropTypes.object,
     format: React.PropTypes.oneOf(['ampm', '24hr']),
     onFocus: React.PropTypes.func,
     onTouchTap: React.PropTypes.func,
     onChange: React.PropTypes.func,
     onShow: React.PropTypes.func,
-    onDismiss: React.PropTypes.func,
+    onDismiss: React.PropTypes.func
   },
 
   windowListeners: {
     'keyup': '_handleWindowKeyUp'
   },
 
-  getDefaultProps: function() {
+  getDefaultProps() {
     return {
       defaultTime: emptyTime,
       format: 'ampm'
     };
   },
 
-  getInitialState: function() {
+  getInitialState() {
     return {
       time: this.props.defaultTime,
       dialogTime: new Date()
     };
   },
-  formatTime: function(date){
 
-    var hours = date.getHours();
-    var mins = date.getMinutes();
-    var aditional = "";
+  formatTime(date) {
+    let hours = date.getHours();
+    let mins = date.getMinutes();
+    let aditional = "";
 
-    if(this.props.format == "ampm"){
-      var isAM = hours < 12;
+    if (this.props.format === "ampm"){
+      let isAM = hours < 12;
       hours = hours % 12;
       aditional +=  isAM ? " am" : " pm";
       hours = hours || 12;
@@ -58,13 +57,14 @@ var TimePicker = React.createClass({
     hours = hours.toString();
     mins = mins.toString();
 
-    if(hours.length < 2) hours = "0" + hours;
-    if(mins.length < 2) mins = "0" + mins;
-    
+    if (hours.length < 2) hours = "0" + hours;
+    if (mins.length < 2) mins = "0" + mins;
+
     return  hours + ":" + mins + aditional;
   },
-  render: function() {
-    var {
+
+  render() {
+    let {
       format,
       onFocus,
       onTouchTap,
@@ -73,9 +73,9 @@ var TimePicker = React.createClass({
       ...other
     } = this.props;
 
-    var defaultInputValue;
+    let defaultInputValue;
 
-    if (this.props.defaultDate) {
+    if (this.props.defaultTime) {
       defaultInputValue = this.formatTime(this.props.defaultTime);
     }
 
@@ -95,41 +95,40 @@ var TimePicker = React.createClass({
           onDismiss={onDismiss}
           format={format} />
       </div>
-
     );
   },
 
-  getTime: function() {
+  getTime() {
     return this.state.time;
   },
 
-  setTime: function(t) {
+  setTime(t) {
     this.setState({
-      time: t 
+      time: t
     });
     this.refs.input.setValue(this.formatTime(t));
   },
 
-  _handleDialogAccept: function(t) {
-
+  _handleDialogAccept(t) {
     this.setTime(t);
     if (this.props.onChange) this.props.onChange(null, t);
   },
 
-  _handleInputFocus: function(e) {
+  _handleInputFocus(e) {
     e.target.blur();
     if (this.props.onFocus) this.props.onFocus(e);
   },
 
-  _handleInputTouchTap: function(e) {
+  _handleInputTouchTap(e) {
+    e.preventDefault();
+
     this.setState({
       dialogTime: this.getTime()
     });
-   
+
     this.refs.dialogWindow.show();
     if (this.props.onTouchTap) this.props.onTouchTap(e);
-  } 
-
+  }
 });
 
 module.exports = TimePicker;

@@ -1,28 +1,28 @@
-var React = require('react');
-var mui = require('mui');
-var Slider = mui.Slider;
-var ComponentDoc = require('../../component-doc.jsx');
+let React = require('react');
+let { Slider } = require('material-ui');
+let ComponentDoc = require('../../component-doc');
+
 
 class SlidersPage extends React.Component {
 
-  handleMouseDown(e){
+  handleMouseDown(e) {
     console.log('hmd', e);
   }
 
   render() {
 
-    var code =
+    let code =
       '// Default\n' +
       '<Slider name="slider1" />\n\n' +
       '// With starting value\n' +
-      '<Slider name="slider2" defaultValue={0.5} />\n' +
+      '<Slider name="slider2" defaultValue={0.5} step={0.10} />\n' +
       '<Slider name="slider3" defaultValue={1} />\n\n' +
       '// Disabled with fixed value\n' +
       '<Slider name="slider1" disabled={true} />\n' +
       '<Slider name="slider2" disabled={true} value={0.5} />\n' +
       '<Slider name="slider3" disabled={true} value={1} />';
 
-    var componentInfo = [
+    let componentInfo = [
       {
         name: 'Props',
         infoArray: [
@@ -41,6 +41,12 @@ class SlidersPage extends React.Component {
                   '0 to 1 inclusive.'
           },
           {
+            name: 'step',
+            type: 'number',
+            header: 'default: 0.01',
+            desc: 'The granularity the slider can step through values.'
+          },
+          {
             name: 'style',
             type: 'object',
             header: 'optional',
@@ -57,7 +63,7 @@ class SlidersPage extends React.Component {
             header: 'optional',
             desc: 'Callback function that is fired when the user changes the ' +
                   'slider\'s value.'
-          }         
+          }
         ]
       },
     ];
@@ -68,8 +74,8 @@ class SlidersPage extends React.Component {
         code={code}
         componentInfo={componentInfo}>
 
-        <Slider name="slider1"/>
-        <Slider onMouseDown={this.handleMouseDown} name="slider2" value={0.5} />
+        <Slider name="slider1" />
+        <Slider name="slider2" value={0.5} step={0.10} />
         <Slider name="slider3" value={1}/>
         <Slider name="slider1" disabled={true} />
         <Slider name="slider2" disabled={true} value={0.5} />

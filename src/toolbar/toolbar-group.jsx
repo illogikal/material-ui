@@ -1,8 +1,9 @@
-var React = require('react');
-var Colors = require('../styles/colors');
-var StylePropable = require('../mixins/style-propable');
+let React = require('react');
+let Colors = require('../styles/colors');
+let StylePropable = require('../mixins/style-propable');
 
-var ToolbarGroup = React.createClass({
+
+let ToolbarGroup = React.createClass({
 
   mixins: [StylePropable],
 
@@ -15,24 +16,24 @@ var ToolbarGroup = React.createClass({
     float: React.PropTypes.string
   },
 
-  getDefaultProps: function() {
+  getDefaultProps() {
     return {
       float: 'left'
     };
   },
-  
-  getTheme: function() {
+
+  getTheme() {
     return this.context.muiTheme.component.toolbar;
   },
 
-  getSpacing: function() {
+  getSpacing() {
     return this.context.muiTheme.spacing.desktopGutter;
   },
 
-  getStyles: function() {
-    var marginHorizontal = this.getSpacing();
-    var marginVertical = (this.getTheme().height - this.context.muiTheme.component.button.height) / 2;
-    var styles = {
+  getStyles() {
+    let marginHorizontal = this.getSpacing();
+    let marginVertical = (this.getTheme().height - this.context.muiTheme.component.button.height) / 2;
+    let styles = {
       root: {
         position: 'relative',
         float: this.props.float
@@ -44,7 +45,7 @@ var ToolbarGroup = React.createClass({
           display: 'inline-block',
           marginRight: this.getSpacing()
         },
-        controlBg: {  
+        controlBg: {
           backgroundColor: this.getTheme().menuHoverColor,
           borderRadius: 0
         },
@@ -66,7 +67,6 @@ var ToolbarGroup = React.createClass({
           paddingLeft: this.getSpacing()
         },
         hover: {
-          zIndex: 1,
           color: Colors.darkBlack
         }
       },
@@ -79,15 +79,18 @@ var ToolbarGroup = React.createClass({
     return styles;
   },
 
-  render: function() {
-    var styles = this.getStyles();
+  render() {
+    let styles = this.getStyles();
 
     if (this.props.firstChild) styles.marginLeft = -24;
     if (this.props.lastChild) styles.marginRight = -24;
 
-    var newChildren = React.Children.map(this.props.children, function(currentChild) {
+    let newChildren = React.Children.map(this.props.children, (currentChild) => {
+      if (!currentChild) {
+        return null;
+      }
       switch (currentChild.type.displayName) {
-        case 'DropDownMenu' : 
+        case 'DropDownMenu' :
           return React.cloneElement(currentChild, {
             style: styles.dropDownMenu.root,
             styleControlBg: styles.dropDownMenu.controlBg,
@@ -104,13 +107,13 @@ var ToolbarGroup = React.createClass({
           return React.cloneElement(currentChild, {
             style: styles.button
           });
-        case 'FontIcon' : 
+        case 'FontIcon' :
           return React.cloneElement(currentChild, {
             style: styles.icon.root,
             onMouseOver: this._handleMouseOverFontIcon,
             onMouseOut: this._handleMouseOutFontIcon
           });
-        case 'ToolbarSeparator' : case 'ToolbarTitle' : 
+        case 'ToolbarSeparator' : case 'ToolbarTitle' :
           return React.cloneElement(currentChild, {
             style: this.mergeStyles(styles.span, currentChild.props.style)
           });
@@ -126,25 +129,25 @@ var ToolbarGroup = React.createClass({
     );
   },
 
-  _handleMouseOverDropDownMenu: function(e) {
+  _handleMouseOverDropDownMenu(e) {
     e.target.style.zIndex = this.getStyles().icon.hover.zIndex;
     e.target.style.color = this.getStyles().icon.hover.color;
   },
 
-  _handleMouseOutDropDownMenu: function(e) {
+  _handleMouseOutDropDownMenu(e) {
     e.target.style.zIndex = 'auto';
     e.target.style.color = this.getStyles().icon.root.color;
   },
 
-  _handleMouseOverFontIcon: function(e) {
+  _handleMouseOverFontIcon(e) {
     e.target.style.zIndex = this.getStyles().icon.hover.zIndex;
     e.target.style.color = this.getStyles().icon.hover.color;
   },
 
-  _handleMouseOutFontIcon: function(e) {
+  _handleMouseOutFontIcon(e) {
     e.target.style.zIndex = 'auto';
     e.target.style.color = this.getStyles().icon.root.color;
-  },
+  }
 });
 
 module.exports = ToolbarGroup;

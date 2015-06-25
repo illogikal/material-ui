@@ -1,9 +1,10 @@
-var React = require('react');
-var StylePropable = require('../mixins/style-propable');
-var EnhancedButton = require('../enhanced-button');
-var Transitions = require('../styles/transitions');
+let React = require('react');
+let StylePropable = require('../mixins/style-propable');
+let EnhancedButton = require('../enhanced-button');
+let Transitions = require('../styles/transitions');
 
-var ClockButton = React.createClass({
+
+let ClockButton = React.createClass({
 
   mixins: [StylePropable],
 
@@ -12,36 +13,37 @@ var ClockButton = React.createClass({
   },
 
   propTypes: {
-      position: React.PropTypes.oneOf(['left', 'right'])
+    position: React.PropTypes.oneOf(['left', 'right'])
   },
-  
-  getDefaultProps: function () {
-      return {
-          position: "left"  
-      };
+
+  getDefaultProps() {
+    return {
+        position: "left"
+    };
   },
-  _handleTouchTap: function(){
-    
+
+  _handleTouchTap() {
     this.setState({
       selected: true
     })
     this.props.onTouchTap();
   },
-  getTheme: function() {
+
+  getTheme() {
     return this.context.muiTheme.component.timePicker;
   },
-  render: function() {
-    
-    var {
+
+  render() {
+    let {
       className,
       ...other} = this.props;
-    
-    var styles = {
+
+    let styles = {
       root: {
         position: "absolute",
         bottom: "65px",
         pointerEvents: "auto",
-        height: "50px", 
+        height: "50px",
         width: "50px",
         borderRadius: "100%"
       },
@@ -62,8 +64,8 @@ var ClockButton = React.createClass({
         borderRadius: '50%',
         transform: 'scale(0)',
         transition: Transitions.easeOut(),
-        backgroundColor: this.getTheme().accentColor,
-      },
+        backgroundColor: this.getTheme().accentColor
+      }
     };
 
     if (this.props.selected) {
@@ -72,23 +74,22 @@ var ClockButton = React.createClass({
       styles.select.transform = 'scale(1)';
     }
 
-    if( this.props.position == "right" ){
+    if ( this.props.position === "right" ){
       styles.root.right = "5px";
-    }else{
+    }
+    else {
       styles.root.left = "5px";
     }
-      
-
 
     return (
         <EnhancedButton {...other}
           style={this.mergeAndPrefix(styles.root)}
-          disableFocusRipple={true} 
-          disableTouchRipple={true} 
-          onTouchTap={this._handleTouchTap}> 
+          disableFocusRipple={true}
+          disableTouchRipple={true}
+          onTouchTap={this._handleTouchTap}>
           <span  style={this.mergeAndPrefix(styles.select)} />
           <span  style={this.mergeAndPrefix(styles.label)} >{this.props.children}</span>
-        </EnhancedButton> 
+        </EnhancedButton>
     );
   }
 });

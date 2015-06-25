@@ -1,9 +1,21 @@
-var React = require('react');
-var mui = require('mui');
-var ComponentDoc = require('../../component-doc.jsx');
-var extend = mui.Utils.Extend;
-var Typography = mui.Styles.Typography;
-var {ClearFix, FlatButton, FloatingActionButton, FontIcon, RaisedButton, Tab, Tabs} = mui;
+let React = require('react');
+let ComponentDoc = require('../../component-doc');
+let mui = require('material-ui');
+
+let {
+  ClearFix,
+  FlatButton,
+  FloatingActionButton,
+  FontIcon,
+  RaisedButton,
+  Styles,
+  Tab,
+  Tabs,
+  Utils
+} = mui;
+let extend = Utils.Extend;
+let { Colors, Typography } = Styles;
+
 
 class ButtonPage extends React.Component {
 
@@ -63,6 +75,26 @@ class ButtonPage extends React.Component {
         name: 'Flat Button',
         infoArray: [
           {
+            name: 'containerElement',
+            type: 'oneOfType [string, element]',
+            header: 'default: button',
+            desc: 'This component will render a button element by default and an anchor element if linkButton is set to true. ' +
+              'However, you can override this behavior by passing in a string or another react element into this prop. This is ' +
+              'useful for generating link buttons with the react router link element.'
+          },
+          {
+            name: 'disabled',
+            type: 'bool',
+            header: 'optional',
+            desc: 'Disables the button if set to true.'
+          },
+          {
+            name: 'hoverColor',
+            type: 'string',
+            header: 'optional',
+            desc: 'Override the inline hover color of the button\'s root element.'
+          },
+          {
             name: 'label or children',
             type: 'string (label) or HTML/React elements (children)',
             header: 'required',
@@ -96,28 +128,36 @@ class ButtonPage extends React.Component {
             desc: 'If true, the button will use the secondary button colors.'
           },
           {
-            name: 'style',
-            type: 'object',
-            header: 'optional',
-            desc: 'Override the inline-styles of the button\'s root element.'
-          },
-          {
-            name: 'hoverColor',
-            type: 'string',
-            header: 'optional',
-            desc: 'Override the inline hover color of the button\'s root element.'
-          },
-          {
             name: 'rippleColor',
             type: 'string',
             header: 'optional',
             desc: 'Override the inline color of the button\'s ripple element.'
+          },
+          {
+            name: 'style',
+            type: 'object',
+            header: 'optional',
+            desc: 'Override the inline-styles of the button\'s root element.'
           }
         ]
       },
       {
         name: 'Raised Button',
         infoArray: [
+          {
+            name: 'containerElement',
+            type: 'oneOfType [string, element]',
+            header: 'default: button',
+            desc: 'This component will render a button element by default and an anchor element if linkButton is set to true. ' +
+              'However, you can override this behavior by passing in a string or another react element into this prop. This is ' +
+              'useful for generating link buttons with the react router link element.'
+          },
+          {
+            name: 'disabled',
+            type: 'bool',
+            header: 'optional',
+            desc: 'Disables the button if set to true.'
+          },
           {
             name: 'label or children',
             type: 'string (label) or HTML/React elements (children)',
@@ -162,6 +202,20 @@ class ButtonPage extends React.Component {
       {
         name: 'Floating Action Button',
         infoArray: [
+          {
+            name: 'containerElement',
+            type: 'oneOfType [string, element]',
+            header: 'default: button',
+            desc: 'This component will render a button element by default and an anchor element if linkButton is set to true. ' +
+              'However, you can override this behavior by passing in a string or another react element into this prop. This is ' +
+              'useful for generating link buttons with the react router link element.'
+          },
+          {
+            name: 'disabled',
+            type: 'bool',
+            header: 'optional',
+            desc: 'Disables the button if set to true.'
+          },
           {
             name: 'iconClassName',
             type: 'string',
@@ -208,7 +262,7 @@ class ButtonPage extends React.Component {
   }
 
   getStyles() {
-    var styles = {
+    let styles = {
       container: {
         textAlign: 'center',
         marginBottom: '16px'
@@ -257,7 +311,8 @@ class ButtonPage extends React.Component {
         verticalAlign: 'middle',
         float: 'left',
         paddingLeft: '12px',
-        lineHeight: '36px'
+        lineHeight: '36px',
+        color: Colors.cyan500
       },
       exampleButtonIcon: {
         color: Typography.textFullWhite
@@ -278,7 +333,7 @@ class ButtonPage extends React.Component {
   }
 
   render() {
-    var styles = this.getStyles();
+    let styles = this.getStyles();
     return (
       <div>
         <h2 style={styles.headline}>Buttons</h2>
@@ -320,7 +375,7 @@ class ButtonPage extends React.Component {
           <Tab label="Raised Buttons">
             <ComponentDoc
               name=""
-              code={this.codeFlatButton}
+              code={this.codeRaisedButton}
               desc={this.desc}
               componentInfo={this.componentInfo.slice(1,2)}>
               <div style={styles.group}>
@@ -354,7 +409,7 @@ class ButtonPage extends React.Component {
           <Tab label="Floating Action Buttons">
             <ComponentDoc
               name=""
-              code={this.codeFlatButton}
+              code={this.codeFloatingActionButton}
               desc={this.desc}
               componentInfo={this.componentInfo.slice(2)}>
               <div style={styles.groupFloatingAction}>

@@ -1,15 +1,14 @@
-var React = require('react');
-var mui = require('mui');
-var ComponentDoc = require('../../component-doc.jsx');
+let React = require('react');
+let { AppBar, DropDownMenu } = require('material-ui');
+let ComponentDoc = require('../../component-doc');
 
-var {AppBar, DropDownMenu} = mui;
 
 class AppBarPage extends React.Component {
 
   constructor(props) {
     super(props);
 
-    this.code = 
+    this.code =
           '<AppBar title=\'Title\' iconClassNameRight="muidocs-icon-navigation-expand-more"/>';
 
     this.desc = 'App bars are a collection of components placed as a static ' +
@@ -33,7 +32,7 @@ class AppBarPage extends React.Component {
             name: 'iconClassNameRight',
             type: 'string',
             header: 'optional',
-            desc: 'Similiar to the iconClassNameLeft prop except that is applies ' +
+            desc: 'Similiar to the iconClassNameLeft prop except that it applies ' +
                   'to the icon displayed on the right of the app bar.'
           },
           {
@@ -71,9 +70,9 @@ class AppBarPage extends React.Component {
           },
           {
             name: 'title',
-            type: 'string',
+            type: 'node',
             header: 'optional',
-            desc: 'A string of text that is displayed on the app bar.'
+            desc: 'The title to display on the app bar. Could be number, string, element or an array containing these types.'
           },
           {
             name: 'zDepth',
@@ -82,7 +81,7 @@ class AppBarPage extends React.Component {
             desc: 'The zDepth of the app bar. The shadow of the app bar is also ' +
                   'dependent on this property.'
           }
-        ] 
+        ]
       },
       {
         name: 'Events',
@@ -92,7 +91,7 @@ class AppBarPage extends React.Component {
             header: 'AppBar.onLeftIconButtonTouchTap(e)',
             desc: 'Callback function for when the left icon is selected via ' +
                   'a touch tap.'
-          }, 
+          },
           {
             name: 'onRightIconButtonTouchTap',
             header: 'AppBar.onRightIconButtonTouchTap(e)',

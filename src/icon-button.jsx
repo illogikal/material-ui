@@ -1,11 +1,12 @@
-var React = require('react');
-var StylePropable = require('./mixins/style-propable');
-var Transitions = require('./styles/transitions');
-var EnhancedButton = require('./enhanced-button');
-var FontIcon = require('./font-icon');
-var Tooltip = require('./tooltip');
+let React = require('react');
+let StylePropable = require('./mixins/style-propable');
+let Transitions = require('./styles/transitions');
+let EnhancedButton = require('./enhanced-button');
+let FontIcon = require('./font-icon');
+let Tooltip = require('./tooltip');
 
-var IconButton = React.createClass({
+
+let IconButton = React.createClass({
 
   mixins: [StylePropable],
 
@@ -20,29 +21,31 @@ var IconButton = React.createClass({
     iconStyle: React.PropTypes.object,
     onBlur: React.PropTypes.func,
     onFocus: React.PropTypes.func,
+    onKeyboardFocus: React.PropTypes.func,
     tooltip: React.PropTypes.string,
     touch: React.PropTypes.bool,
+    tooltipPosition: React.PropTypes.oneOf(['bottom-center',
+      'bottom-left','bottom-right','top-center', 'top-left',
+      'top-right'])
   },
 
-  getInitialState: function() {
+  getInitialState() {
     return {
       tooltipShown: false
     };
   },
 
-  getDefaultProps: function () {
+  getDefaultProps() {
     return {
-      iconStyle: {}
+      iconStyle: {},
+      tooltipPosition: 'bottom-center'
     };
   },
 
-  componentDidMount: function() {
-    if (this.props.tooltip) {
-      this._positionTooltip();
-    }
+  componentDidMount() {
     if (process.env.NODE_ENV !== 'production') {
       if (this.props.iconClassName && this.props.children) {
-        var warning = 'You have set both an iconClassName and a child icon. ' +
+        let warning = 'You have set both an iconClassName and a child icon. ' +
                       'It is recommended you use only one method when adding ' +
                       'icons to IconButtons.';
         console.warn(warning);
@@ -50,104 +53,91 @@ var IconButton = React.createClass({
     }
   },
 
-  getTheme: function() {
-    return this.context.muiTheme.palette;
-  },
+  getStyles() {
+    let spacing = this.context.muiTheme.spacing;
+    let palette = this.context.muiTheme.palette;
 
-  getSpacing: function() {
-    return this.context.muiTheme.spacing;
-  },
-
-  getDisabledColor: function() {
-    return this.context.muiTheme.palette.disabledColor;
-  },
-
-  getStyles: function() {
-    var styles = {
+    let styles = {
       root: {
         position: 'relative',
         boxSizing: 'border-box',
         transition: Transitions.easeOut(),
-        padding: (this.getSpacing().iconSize / 2),
-        width: this.getSpacing().iconSize*2,
-        height: this.getSpacing().iconSize*2
+        padding: spacing.iconSize / 2,
+        width: spacing.iconSize*2,
+        height: spacing.iconSize*2
       },
       tooltip: {
         boxSizing: 'border-box',
-        marginTop: this.context.muiTheme.component.button.iconButtonSize + 4
       },
       icon: {
-        color: this.getTheme().textColor,
-        fill: this.getTheme().textColor
+        color: palette.textColor,
+        fill: palette.textColor
       },
       overlay: {
         position: 'relative',
         top: 0,
         width: '100%',
         height: '100%',
-        background: this.getDisabledColor()
+        background: palette.disabledColor
       },
-      rootWhenDisabled: {
-        color: this.getDisabledColor(),
-        fill: this.getDisabledColor()
-      },
-      iconWhenDisabled: {
-        color: this.getDisabledColor(),
-        fill: this.getDisabledColor()
+      disabled: {
+        color: palette.disabledColor,
+        fill: palette.disabledColor
       }
     };
     return styles;
   },
 
-  render: function() {
-    var {
+  render() {
+    let {
+      disabled,
+      iconClassName,
       tooltip,
       touch,
       ...other } = this.props;
-    var tooltipElement;
-    var fonticon;
+    let fonticon;
 
-    var styles = this.getStyles();
+    let styles = this.getStyles();
+    let tooltipPosition = this.props.tooltipPosition.split('-');
 
-    if (this.props.tooltip) {
-      tooltipElement = (
-        <Tooltip
-          ref="tooltip"
-          label={tooltip}
-          show={this.state.tooltipShown}
-          touch={touch}
-          style={this.mergeStyles(styles.tooltip)}/>
-      );
-    }
+    let tooltipElement = tooltip ? (
+      <Tooltip
+        ref="tooltip"
+        label={tooltip}
+        show={this.state.tooltipShown}
+        touch={touch}
+        style={this.mergeStyles(styles.tooltip)}
+        verticalPosition={tooltipPosition[0]}
+        horizontalPosition={tooltipPosition[1]}/>
+    ) : null;
 
-    if (this.props.iconClassName) {
-      var { iconHoverColor, ...iconStyle } = this.props.iconStyle;
+    if (iconClassName) {
+      let {
+        iconHoverColor,
+        ...iconStyle
+      } = this.props.iconStyle;
 
       fonticon = (
         <FontIcon
-          className={this.props.iconClassName}
-          hoverColor={iconHoverColor}
+          className={iconClassName}
+          hoverColor={disabled ? null : iconHoverColor}
           style={this.mergeStyles(
             styles.icon,
-            this.props.disabled && styles.iconWhenDisabled,
+            disabled ? styles.disabled : {},
             iconStyle
           )}/>
       );
     }
 
-    if (this.props.children && this.props.disabled) {
-      React.Children.forEach(this.props.children, function(child) {
-        child.props.style = {
-          color: this.getDisabledColor(),
-          fill: this.getDisabledColor(),
-        }
-      }, this);
-    }
+    let children = disabled ?
+      this._addStylesToChildren(styles.disabled) :
+      this.props.children;
 
     return (
       <EnhancedButton {...other}
         ref="button"
         centerRipple={true}
+        disabled={disabled}
         style={this.mergeStyles(styles.root, this.props.style)}
         onBlur={this._handleBlur}
         onFocus={this._handleFocus}
@@ -157,58 +147,68 @@ var IconButton = React.createClass({
 
         {tooltipElement}
         {fonticon}
-        {this.props.children}
+        {children}
 
       </EnhancedButton>
     );
   },
 
-  _positionTooltip: function() {
-    var tooltip = React.findDOMNode(this.refs.tooltip);
-    var tooltipWidth = tooltip.offsetWidth;
-    var buttonWidth = 48;
+  _addStylesToChildren(styles) {
+    let children = [];
 
-    tooltip.style.left = (tooltipWidth - buttonWidth) / 2 * -1 + 'px';
+    React.Children.forEach(this.props.children, (child) => {
+      children.push(
+        React.cloneElement(child, {
+          key: child.props.key ? child.props.key : children.length,
+          style: styles
+        })
+      );
+    });
+
+    return children;
   },
 
-  _showTooltip: function() {
+  _showTooltip() {
     if (!this.props.disabled && this.props.tooltip) {
       this.setState({ tooltipShown: true });
     }
   },
 
-  _hideTooltip: function() {
+  _hideTooltip() {
     if (this.props.tooltip) this.setState({ tooltipShown: false });
   },
 
-  _handleBlur: function(e) {
+  _handleBlur(e) {
     this._hideTooltip();
     if (this.props.onBlur) this.props.onBlur(e);
   },
 
-  _handleFocus: function(e) {
+  _handleFocus(e) {
     this._showTooltip();
     if (this.props.onFocus) this.props.onFocus(e);
   },
 
-  _handleMouseOut: function(e) {
+  _handleMouseOut(e) {
     if (!this.refs.button.isKeyboardFocused()) this._hideTooltip();
     if (this.props.onMouseOut) this.props.onMouseOut(e);
   },
 
-  _handleMouseOver: function(e) {
+  _handleMouseOver(e) {
     this._showTooltip();
     if (this.props.onMouseOver) this.props.onMouseOver(e);
   },
 
-  _handleKeyboardFocus: function(e, keyboardFocused) {
+  _handleKeyboardFocus(e, keyboardFocused) {
     if (keyboardFocused && !this.props.disabled) {
       this._showTooltip();
       if (this.props.onFocus) this.props.onFocus(e);
-    } else if (!this.state.hovered) {
+    }
+    else if (!this.state.hovered) {
       this._hideTooltip();
       if (this.props.onBlur) this.props.onBlur(e);
     }
+
+    if (this.props.onKeyboardFocus) this.props.onKeyboardFocus(e, keyboardFocused);
   }
 
 });

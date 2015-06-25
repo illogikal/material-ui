@@ -1,15 +1,16 @@
-var React = require('react');
-var StylePropable = require('../mixins/style-propable');
-var FontIcon = require('../font-icon');
-var Toggle = require('../toggle');
+let React = require('react');
+let StylePropable = require('../mixins/style-propable');
+let FontIcon = require('../font-icon');
+let Toggle = require('../toggle');
 
-var Types = {
+const Types = {
   LINK: 'LINK',
   SUBHEADER: 'SUBHEADER',
   NESTED: 'NESTED'
 };
 
-var MenuItem = React.createClass({
+
+let MenuItem = React.createClass({
 
   mixins: [StylePropable],
 
@@ -30,38 +31,33 @@ var MenuItem = React.createClass({
     toggle: React.PropTypes.bool,
     disabled: React.PropTypes.bool,
     onTouchTap: React.PropTypes.func,
-    onClick: React.PropTypes.func,
     onToggle: React.PropTypes.func,
-    selected: React.PropTypes.bool
+    selected: React.PropTypes.bool,
+    active: React.PropTypes.bool
   },
-  
+
   statics: {
     Types: Types
   },
 
-  getDefaultProps: function() {
+  getDefaultProps() {
     return {
       toggle: false,
-      disabled: false
+      disabled: false,
+      active:false
     };
   },
 
-  getInitialState: function() {
-    return {
-      hovered: false
-    }
-  },
-
-  getTheme: function() {
+  getTheme() {
     return this.context.muiTheme.component.menuItem;
   },
 
-  getSpacing: function() {
+  getSpacing() {
     return this.context.muiTheme.spacing;
   },
 
-  getStyles: function() {
-    var styles = {
+  getStyles() {
+    let styles = {
       root: {
         userSelect: 'none',
         cursor: 'pointer',
@@ -117,26 +113,26 @@ var MenuItem = React.createClass({
     return styles;
   },
 
-  render: function() {
-    var icon;
-    var data;
-    var iconRight;
-    var attribute;
-    var number;
-    var toggleElement;
+  render() {
+    let icon;
+    let data;
+    let iconRight;
+    let attribute;
+    let number;
+    let toggleElement;
 
-    var styles = this.getStyles();
+    let styles = this.getStyles();
 
     if (this.props.iconClassName) icon = <FontIcon style={this.mergeAndPrefix(styles.icon, this.props.iconStyle)} className={this.props.iconClassName} />;
     if (this.props.iconRightClassName) iconRight = <FontIcon style={this.mergeAndPrefix(styles.iconRight, this.props.iconRightStyle)} className={this.props.iconRightClassName} />;
     if (this.props.data) data = <span style={this.mergeAndPrefix(styles.data)}>{this.props.data}</span>;
     if (this.props.number !== undefined) number = <span style={this.mergeAndPrefix(styles.number)}>{this.props.number}</span>;
     if (this.props.attribute !== undefined) attribute = <span style={this.mergeAndPrefix(styles.style)}>{this.props.attribute}</span>;
-    
+
     if (this.props.toggle) {
-      var {
+      let {
         toggle,
-        onClick,
+        onTouchTap,
         onToggle,
         onMouseOver,
         onMouseOut,
@@ -151,15 +147,14 @@ var MenuItem = React.createClass({
     return (
       <div
         key={this.props.index}
-        className={this.props.className} 
+        className={this.props.className}
         onTouchTap={this._handleTouchTap}
-        onClick={this._handleOnClick}
         onMouseOver={this._handleMouseOver}
         onMouseOut={this._handleMouseOut}
         style={this.mergeAndPrefix(
-          styles.root, 
+          styles.root,
           this.props.selected && styles.rootWhenSelected,
-          (this.state.hovered && !this.props.disabled) && styles.rootWhenHovered,
+          (this.props.active && !this.props.disabled) && styles.rootWhenHovered,
           this.props.style,
           this.props.disabled && styles.rootWhenDisabled)}>
 
@@ -170,33 +165,26 @@ var MenuItem = React.createClass({
         {number}
         {toggleElement}
         {iconRight}
-        
+
       </div>
     );
   },
 
-  _handleTouchTap: function(e) {
+  _handleTouchTap(e) {
     if (!this.props.disabled && this.props.onTouchTap) this.props.onTouchTap(e, this.props.index);
   },
 
-  _handleOnClick: function(e) {
-    if (!this.props.disabled && this.props.onClick) this.props.onClick(e, this.props.index);
-  },
-
-  _handleToggle: function(e, toggled) {
+  _handleToggle(e, toggled) {
     if (!this.props.disabled && this.props.onToggle) this.props.onToggle(e, this.props.index, toggled);
   },
 
-  _handleMouseOver: function(e) {
-    this.setState({hovered: true});
-    if (!this.props.disabled && this.props.onMouseOver) this.props.onMouseOver(e);
+  _handleMouseOver(e) {
+    if (!this.props.disabled && this.props.onMouseOver) this.props.onMouseOver(e, this.props.index);
   },
 
-  _handleMouseOut: function(e) {
-    this.setState({hovered: false});
-    if (!this.props.disabled && this.props.onMouseOut) this.props.onMouseOut(e);
+  _handleMouseOut(e) {
+    if (!this.props.disabled && this.props.onMouseOut) this.props.onMouseOut(e,this.props.index);
   }
-
 });
 
 module.exports = MenuItem;

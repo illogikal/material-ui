@@ -1,8 +1,9 @@
-var React = require('react');
-var StylePropable = require('./mixins/style-propable');
-var AutoPrefix = require('./styles/auto-prefix');
+let React = require('react');
+let StylePropable = require('./mixins/style-propable');
+let AutoPrefix = require('./styles/auto-prefix');
 
-var EnhancedTextarea = React.createClass({
+
+let EnhancedTextarea = React.createClass({
 
   mixins: [StylePropable],
 
@@ -13,24 +14,24 @@ var EnhancedTextarea = React.createClass({
     rows: React.PropTypes.number
   },
 
-  getDefaultProps: function() {
+  getDefaultProps() {
     return {
       rows: 1
     };
   },
 
-  getInitialState: function() {
+  getInitialState() {
     return {
       height: this.props.rows * 24
     };
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     this._syncHeightWithShadow();
   },
 
-  getStyles: function() {
-    var styles = {
+  getStyles() {
+    let styles = {
       root: {
         width: '100%',
         resize: 'none',
@@ -42,21 +43,21 @@ var EnhancedTextarea = React.createClass({
     return styles;
   },
 
-  render: function() {
+  render() {
 
-    var {
+    let {
       onChange,
       onHeightChange,
       rows,
       style,
       textareaStyle,
       valueLink,
-      ...other,
+      ...other
     } = this.props;
 
-    var styles = this.getStyles().root;
+    let styles = this.getStyles().root;
 
-    var textAreaStyles = {
+    let textAreaStyles = {
       width: '100%',
       resize: 'none',
       overflow: 'hidden',
@@ -64,16 +65,16 @@ var EnhancedTextarea = React.createClass({
       padding: 0,
     };
 
-    var inputStyles = this.mergeAndPrefix(styles,{
+    let inputStyles = this.mergeAndPrefix(styles, {
       height: this.state.height + 'px',
     });
 
     inputStyles = this.mergeAndPrefix(inputStyles, textareaStyle);
 
 
-    // Overflow also needed to here to remove the extra row 
+    // Overflow also needed to here to remove the extra row
     // added to textareas in Firefox.
-    var shadowStyles = this.mergeAndPrefix(textAreaStyles, {
+    let shadowStyles = this.mergeAndPrefix(textAreaStyles, {
       position: 'absolute',
       opacity: 0
     });
@@ -102,25 +103,30 @@ var EnhancedTextarea = React.createClass({
     );
   },
 
-  getInputNode: function() {
+  getInputNode() {
     return React.findDOMNode(this.refs.input);
   },
 
-  _syncHeightWithShadow: function(newValue, e) {
-    var shadow = React.findDOMNode(this.refs.shadow);
-    var currentHeight = this.state.height;
-    var newHeight;
+  setValue(value) {
+    this.refs.input.value = value;
+    this._syncHeightWithShadow(value);
+  },
+
+  _syncHeightWithShadow(newValue, e) {
+    let shadow = React.findDOMNode(this.refs.shadow);
+    let currentHeight = this.state.height;
+    let newHeight;
 
     if (newValue !== undefined) shadow.value = newValue;
     newHeight = shadow.scrollHeight;
-    
+
     if (currentHeight !== newHeight) {
       this.setState({height: newHeight});
       if (this.props.onHeightChange) this.props.onHeightChange(e, newHeight);
     }
   },
 
-  _handleChange: function(e) {
+  _handleChange(e) {
     this._syncHeightWithShadow(e.target.value);
 
     if (this.props.hasOwnProperty('valueLink')) {
@@ -129,8 +135,8 @@ var EnhancedTextarea = React.createClass({
 
     if (this.props.onChange) this.props.onChange(e);
   },
-  
-  componentWillReceiveProps: function(nextProps) {
+
+  componentWillReceiveProps(nextProps) {
     if (nextProps.value != this.props.value) {
       this._syncHeightWithShadow(nextProps.value);
     }
